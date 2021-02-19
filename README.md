@@ -5,7 +5,7 @@
 [![Awesome Flutter](https://img.shields.io/badge/Platform-Android_iOS-blue.svg?longCache=true&style=flat-square)]()
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](/LICENSE)
 
-基于 `loggy` 的二次封装
+基于 `wechat_assets_picker`, `wechat_camera_picker`, `flutter_image_compress`, `extended_image` 的二次封装
 
 ## 使用
 
