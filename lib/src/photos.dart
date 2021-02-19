@@ -31,7 +31,7 @@ void showPhotoViewerDialog(BuildContext context,
 
 /// 快速选择
 ///
-/// 参数请参考 [PhotoUtils.cameraPicker] 与 [PhotoUtils.cameraPicker]
+/// 参数请参考 [FKPhotos.cameraPicker] 与 [FKPhotos.cameraPicker]
 void showSelectPhotoPicker(
   BuildContext context, {
   bool isAllowRecording = false,
@@ -52,7 +52,7 @@ void showSelectPhotoPicker(
             title: Langs.getLang(context, 'take_pic'),
             onPressed: () async {
               Navigator.pop(context);
-              final AssetEntity asset = await PhotoUtils.cameraPicker(context,
+              final AssetEntity asset = await FKPhotos.cameraPicker(context,
                   isAllowRecording: isAllowRecording,
                   isOnlyAllowRecording: isOnlyAllowRecording,
                   enableAudio: enableAudio,
@@ -68,7 +68,7 @@ void showSelectPhotoPicker(
               Navigator.pop(
                 context,
               );
-              final List<AssetEntity> assets = await PhotoUtils.albumPicker(
+              final List<AssetEntity> assets = await FKPhotos.albumPicker(
                   context,
                   selectedAssets: selectedAssets,
                   requestType: requestType,
@@ -84,7 +84,7 @@ void showSelectPhotoPicker(
 /// 图片操作工具类
 /// 拍照/录像/媒体选择/图片压缩
 ///
-class PhotoUtils {
+class FKPhotos {
   /// 拍照/视频
   ///
   /// [isAllowRecording] 选择器是否可以录像
@@ -249,11 +249,11 @@ extension AssetEntityExtension on AssetEntity {
 
   /// 压缩文件
   ///
-  /// 压缩参数请参考 [PhotoUtils.compressAndGetFile]
+  /// 压缩参数请参考 [FKPhotos.compressAndGetFile]
   Future<File> compress(
       {int minWidth = 1920, int minHeight = 1080, int quality = 85}) async {
     final String tempFilePath = await _generateTempFilePath();
-    return PhotoUtils.compressAndGetFile(await originFile, tempFilePath,
+    return FKPhotos.compressAndGetFile(await originFile, tempFilePath,
         minWidth: minWidth, minHeight: minHeight, quality: quality);
   }
 }
