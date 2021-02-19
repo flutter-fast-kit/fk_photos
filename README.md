@@ -29,6 +29,7 @@ dependencies:
 | enableAudio | 证件背面信息 | 选择器录像时是否需要录制声音 | false | 
 | maximumRecordingDuration | 录制视频最长时长 | Duration | 15s | 
 | resolutionPreset | 相机的分辨率预设 | ResolutionPreset | high | 
+
 ## 2. `albumPicker` 资源选择器(图片/视频) <- Future<List<AssetEntity>>
 
 | 参数     | 描述              | 类型  | 默认值 |
@@ -36,11 +37,13 @@ dependencies:
 | selectedAssets | 默认选中的资源 | List<AssetEntity> | null | 
 | requestType | 选择器选择资源的类型 | RequestType | image | 
 | maxAssets | 最多选择的图片数量 | int | 1 | 
+
 ## 3. `deleteAsset` 删除资源文件 <- Future<bool>
 
 | 参数     | 描述              | 类型  | 默认值 |
 | -------- | ----------------- | ----- | ------ |
 | id | 资源id | String | null | 
+
 ## 4. `saveToAlbum` 保存图片到相册 <- Future<AssetEntity>
 
 | 参数     | 描述              | 类型  | 默认值 |
@@ -50,6 +53,7 @@ dependencies:
 | base64Img | Base64 图片 | String | null | 
 | uint8list | Uint8List | Uint8List | null | 
 | path | 本地文件路径 | String | null | 
+
 ### 5. 压缩图片
 
 ### 5.1 `compressFile` 压缩图片 <- Future<Uint8List>
@@ -60,6 +64,7 @@ dependencies:
 | minWidth | 最小宽度 | int | 1920 | 
 | minHeight | 最小高度 图片 | int | 1080 | 
 | quality | 质量 | int | 85 | 
+
 ### 5.2 `compressAndGetFile` 压缩图片 <- Future<File>
 
 | 参数     | 描述              | 类型  | 默认值 |
@@ -69,6 +74,7 @@ dependencies:
 | minWidth | 最小宽度 | int | 1920 | 
 | minHeight | 最小高度 图片 | int | 1080 | 
 | quality | 质量 | int | 85 | 
+
 ### 5.3 `compressAsset` 压缩图片 <- Future<Uint8List>
 
 | 参数     | 描述              | 类型  | 默认值 |
@@ -77,6 +83,7 @@ dependencies:
 | minWidth | 最小宽度 | int | 1920 | 
 | minHeight | 最小高度 图片 | int | 1080 | 
 | quality | 质量 | int | 85 | 
+
 ### 5.4 `compressList` 压缩图片 <- Future<Uint8List>
 
 | 参数     | 描述              | 类型  | 默认值 |
