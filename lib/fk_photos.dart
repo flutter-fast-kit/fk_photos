@@ -15,4 +15,8 @@ import 'package:uuid/uuid.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
+export 'package:flutter_image_compress/flutter_image_compress.dart';
+export 'package:wechat_assets_picker/wechat_assets_picker.dart';
+export 'package:wechat_camera_picker/wechat_camera_picker.dart';
+
 part 'src/photos.dart';
