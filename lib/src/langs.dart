@@ -29,6 +29,6 @@ class Langs {
   };
 
   static String getLang(BuildContext context, String key) {
-    return _langDic[context.locale.countryCode][key] ?? _langDic['zh_TW'][key];
+    return _langDic['${context.locale.languageCode}_${context.locale.countryCode}'][key] ?? _langDic['zh_TW'][key];
   }
 }
