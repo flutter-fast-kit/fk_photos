@@ -17,12 +17,22 @@ void showPhotoViewerDialog(BuildContext context,
                 Navigator.pop(context);
               },
               child: PhotoView(
-                minScale: PhotoViewComputedScale.contained * 0.5,
-                maxScale: PhotoViewComputedScale.contained * 3,
-                // tightMode: false,
-                imageProvider: imageProvider,
-                // heroAttributes: const PhotoViewHeroAttributes(tag: 'someTag'),
-              ),
+                  minScale: PhotoViewComputedScale.contained * 0.5,
+                  maxScale: PhotoViewComputedScale.contained * 3,
+                  // tightMode: false,
+                  imageProvider: imageProvider,
+                  // heroAttributes: const PhotoViewHeroAttributes(tag: 'someTag'),
+                  loadFailedChild: Container(
+                    width: double.infinity,
+                    color: Colors.black,
+                    child: Center(
+                      child: Icon(
+                        Icons.broken_image,
+                        color: Colors.grey[400],
+                        size: 40,
+                      ),
+                    ),
+                  )),
             ),
           ),
         );
@@ -78,7 +88,8 @@ void showSelectPhotoPicker(
               }
             })
       ],
-      bottomActionItem: BottomActionItem(title: Langs.getLang(context, 'cancel')));
+      bottomActionItem:
+          BottomActionItem(title: Langs.getLang(context, 'cancel')));
 }
 
 /// 图片操作工具类
@@ -142,7 +153,11 @@ class FKPhotos {
   /// [uint8list] then [Uint8List] type
   /// [path] 本地文件路径
   static Future<AssetEntity> saveToAlbum(
-      {String url, AssetEntity asset, String base64Img, Uint8List uint8list, String path}) async {
+      {String url,
+      AssetEntity asset,
+      String base64Img,
+      Uint8List uint8list,
+      String path}) async {
     if (uint8list != null) {
       return await PhotoManager.editor.saveImage(uint8list);
     } else if (base64Img != null) {
