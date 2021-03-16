@@ -3,8 +3,7 @@ part of fk_photos;
 /// 显示图片弹窗
 ///
 /// [imageProvider] 图片 （AssetImage(fs.path)）
-void showPhotoViewerDialog(BuildContext context,
-    {@required ImageProvider imageProvider}) {
+void showPhotoViewerDialog(BuildContext context, {@required ImageProvider imageProvider}) {
   showDialog<void>(
       useSafeArea: false,
       context: context,
@@ -22,6 +21,18 @@ void showPhotoViewerDialog(BuildContext context,
                   // tightMode: false,
                   imageProvider: imageProvider,
                   // heroAttributes: const PhotoViewHeroAttributes(tag: 'someTag'),
+                  loadingBuilder: (_, __) {
+                    return Container(
+                      child: Center(
+                        child: Theme(
+                            data: ThemeData(cupertinoOverrideTheme: CupertinoThemeData(brightness: Brightness.dark)),
+                            child: CupertinoActivityIndicator(
+                              animating: true,
+                            )),
+                      ),
+                      color: Colors.black,
+                    );
+                  },
                   loadFailedChild: Container(
                     width: double.infinity,
                     color: Colors.black,
@@ -78,18 +89,14 @@ void showSelectPhotoPicker(
               Navigator.pop(
                 context,
               );
-              final List<AssetEntity> assets = await FKPhotos.albumPicker(
-                  context,
-                  selectedAssets: selectedAssets,
-                  requestType: requestType,
-                  maxAssets: maxAssets);
+              final List<AssetEntity> assets = await FKPhotos.albumPicker(context,
+                  selectedAssets: selectedAssets, requestType: requestType, maxAssets: maxAssets);
               if (onAlbumCallback != null) {
                 onAlbumCallback(assets);
               }
             })
       ],
-      bottomActionItem:
-          BottomActionItem(title: Langs.getLang(context, 'cancel')));
+      bottomActionItem: BottomActionItem(title: Langs.getLang(context, 'cancel')));
 }
 
 /// 图片操作工具类
@@ -139,9 +146,7 @@ class FKPhotos {
     int maxAssets = 1,
   }) async {
     final List<AssetEntity> assets = await AssetPicker.pickAssets(context,
-        selectedAssets: selectedAssets,
-        requestType: requestType,
-        maxAssets: maxAssets);
+        selectedAssets: selectedAssets, requestType: requestType, maxAssets: maxAssets);
     return assets;
   }
 
@@ -153,11 +158,7 @@ class FKPhotos {
   /// [uint8list] then [Uint8List] type
   /// [path] 本地文件路径
   static Future<AssetEntity> saveToAlbum(
-      {String url,
-      AssetEntity asset,
-      String base64Img,
-      Uint8List uint8list,
-      String path}) async {
+      {String url, AssetEntity asset, String base64Img, Uint8List uint8list, String path}) async {
     if (uint8list != null) {
       return await PhotoManager.editor.saveImage(uint8list);
     } else if (base64Img != null) {
@@ -265,8 +266,7 @@ extension AssetEntityExtension on AssetEntity {
   /// 压缩文件
   ///
   /// 压缩参数请参考 [FKPhotos.compressAndGetFile]
-  Future<File> compress(
-      {int minWidth = 1920, int minHeight = 1080, int quality = 85}) async {
+  Future<File> compress({int minWidth = 1920, int minHeight = 1080, int quality = 85}) async {
     final String tempFilePath = await _generateTempFilePath();
     return FKPhotos.compressAndGetFile(await originFile, tempFilePath,
         minWidth: minWidth, minHeight: minHeight, quality: quality);
