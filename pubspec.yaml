@@ -1,6 +1,6 @@
 name: fk_photos
 description: A Photo Utils which is an extension for wechat_assets_picker
-version: 2.0.0
+version: 2.0.0-nullsafety
 homepage: https://github.com/flutter-fast-kit/fk_photos
 
 environment:
