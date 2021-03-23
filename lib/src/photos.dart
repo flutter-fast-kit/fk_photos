@@ -3,7 +3,7 @@ part of fk_photos;
 /// 显示图片弹窗
 ///
 /// [imageProvider] 图片 （AssetImage(fs.path)）
-void showPhotoViewerDialog(BuildContext context, {@required ImageProvider imageProvider}) {
+void showPhotoViewerDialog(BuildContext context, {required ImageProvider imageProvider}) {
   showDialog<void>(
       useSafeArea: false,
       context: context,
@@ -16,24 +16,25 @@ void showPhotoViewerDialog(BuildContext context, {@required ImageProvider imageP
                 Navigator.pop(context);
               },
               child: PhotoView(
-                  minScale: PhotoViewComputedScale.contained * 0.5,
-                  maxScale: PhotoViewComputedScale.contained * 3,
-                  // tightMode: false,
-                  imageProvider: imageProvider,
-                  // heroAttributes: const PhotoViewHeroAttributes(tag: 'someTag'),
-                  loadingBuilder: (_, __) {
-                    return Container(
-                      child: Center(
-                        child: Theme(
-                            data: ThemeData(cupertinoOverrideTheme: CupertinoThemeData(brightness: Brightness.dark)),
-                            child: CupertinoActivityIndicator(
-                              animating: true,
-                            )),
-                      ),
-                      color: Colors.black,
-                    );
-                  },
-                  loadFailedChild: Container(
+                minScale: PhotoViewComputedScale.contained * 0.5,
+                maxScale: PhotoViewComputedScale.contained * 3,
+                // tightMode: false,
+                imageProvider: imageProvider,
+                // heroAttributes: const PhotoViewHeroAttributes(tag: 'someTag'),
+                loadingBuilder: (_, __) {
+                  return Container(
+                    child: Center(
+                      child: Theme(
+                          data: ThemeData(cupertinoOverrideTheme: CupertinoThemeData(brightness: Brightness.dark)),
+                          child: CupertinoActivityIndicator(
+                            animating: true,
+                          )),
+                    ),
+                    color: Colors.black,
+                  );
+                },
+                errorBuilder: (context, err, _) {
+                  return Container(
                     width: double.infinity,
                     color: Colors.black,
                     child: Center(
@@ -43,7 +44,9 @@ void showPhotoViewerDialog(BuildContext context, {@required ImageProvider imageP
                         size: 40,
                       ),
                     ),
-                  )),
+                  );
+                },
+              ),
             ),
           ),
         );
@@ -60,11 +63,11 @@ void showSelectPhotoPicker(
   bool enableAudio = false,
   Duration maximumRecordingDuration = const Duration(seconds: 15),
   ResolutionPreset resolutionPreset = ResolutionPreset.high,
-  List<AssetEntity> selectedAssets,
+  List<AssetEntity>? selectedAssets,
   RequestType requestType = RequestType.image,
   int maxAssets = 1,
-  ValueChanged<AssetEntity> onCameraCallback,
-  ValueChanged<List<AssetEntity>> onAlbumCallback,
+  ValueChanged<AssetEntity?>? onCameraCallback,
+  ValueChanged<List<AssetEntity>?>? onAlbumCallback,
 }) {
   showActionSheet<void>(
       context: context,
@@ -73,7 +76,7 @@ void showSelectPhotoPicker(
             title: Langs.getLang(context, 'take_pic'),
             onPressed: () async {
               Navigator.pop(context);
-              final AssetEntity asset = await FKPhotos.cameraPicker(context,
+              final AssetEntity? asset = await FKPhotos.cameraPicker(context,
                   isAllowRecording: isAllowRecording,
                   isOnlyAllowRecording: isOnlyAllowRecording,
                   enableAudio: enableAudio,
@@ -89,7 +92,7 @@ void showSelectPhotoPicker(
               Navigator.pop(
                 context,
               );
-              final List<AssetEntity> assets = await FKPhotos.albumPicker(context,
+              final List<AssetEntity>? assets = await FKPhotos.albumPicker(context,
                   selectedAssets: selectedAssets, requestType: requestType, maxAssets: maxAssets);
               if (onAlbumCallback != null) {
                 onAlbumCallback(assets);
@@ -110,16 +113,17 @@ class FKPhotos {
   /// [enableAudio] 选择器录像时是否需要录制声音
   /// [maximumRecordingDuration] 录制视频最长时长
   /// [resolutionPreset] 相机的分辨率预设
-  static Future<AssetEntity> cameraPicker(BuildContext context,
+  static Future<AssetEntity?> cameraPicker(BuildContext context,
       {bool isAllowRecording = false,
       bool isOnlyAllowRecording = false,
       bool enableAudio = false,
       Duration maximumRecordingDuration = const Duration(seconds: 15),
       ResolutionPreset resolutionPreset = ResolutionPreset.high}) async {
     /// 拉起相机
-    final AssetEntity entity = await CameraPicker.pickFromCamera(context,
-        isAllowRecording: isAllowRecording,
-        isOnlyAllowRecording: isOnlyAllowRecording,
+
+    final AssetEntity? entity = await CameraPicker.pickFromCamera(context,
+        enableRecording: isAllowRecording,
+        onlyEnableRecording: isOnlyAllowRecording,
         enableAudio: enableAudio,
         maximumRecordingDuration: maximumRecordingDuration,
         resolutionPreset: resolutionPreset);
@@ -139,13 +143,13 @@ class FKPhotos {
   /// [selectedAssets] 默认选中的资源
   /// [requestType] 选择器选择资源的类型
   /// [maxAssets] 最多选择的图片数量
-  static Future<List<AssetEntity>> albumPicker(
+  static Future<List<AssetEntity>?> albumPicker(
     BuildContext context, {
-    List<AssetEntity> selectedAssets,
+    List<AssetEntity>? selectedAssets,
     RequestType requestType = RequestType.image,
     int maxAssets = 1,
   }) async {
-    final List<AssetEntity> assets = await AssetPicker.pickAssets(context,
+    final List<AssetEntity>? assets = await AssetPicker.pickAssets(context,
         selectedAssets: selectedAssets, requestType: requestType, maxAssets: maxAssets);
     return assets;
   }
@@ -157,8 +161,8 @@ class FKPhotos {
   /// [base64Img] Base64 图片
   /// [uint8list] then [Uint8List] type
   /// [path] 本地文件路径
-  static Future<AssetEntity> saveToAlbum(
-      {String url, AssetEntity asset, String base64Img, Uint8List uint8list, String path}) async {
+  static Future<AssetEntity?> saveToAlbum(
+      {String? url, AssetEntity? asset, String? base64Img, Uint8List? uint8list, String? path}) async {
     if (uint8list != null) {
       return await PhotoManager.editor.saveImage(uint8list);
     } else if (base64Img != null) {
@@ -171,8 +175,10 @@ class FKPhotos {
       final Uint8List byteData = await file.readAsBytes();
       return await PhotoManager.editor.saveImage(byteData);
     } else if (url != null) {
-      final Uint8List data = await getNetworkImageData(url, useCache: false);
-      return await PhotoManager.editor.saveImage(data);
+      final Uint8List? data = await getNetworkImageData(url, useCache: false);
+      if (data != null) {
+        return await PhotoManager.editor.saveImage(data);
+      }
     }
     return Future.value(null);
   }
@@ -183,9 +189,9 @@ class FKPhotos {
   /// [minWidth] 宽度
   /// [minHeight] 高度
   /// [quality] 质量
-  static Future<Uint8List> compressFile(File file,
+  static Future<Uint8List?> compressFile(File file,
       {int minWidth = 1920, int minHeight = 1080, int quality = 85}) async {
-    final Uint8List result = await FlutterImageCompress.compressWithFile(
+    final Uint8List? result = await FlutterImageCompress.compressWithFile(
       file.absolute.path,
       minWidth: minWidth,
       minHeight: minHeight,
@@ -201,9 +207,9 @@ class FKPhotos {
   /// [minWidth] 宽度
   /// [minHeight] 高度
   /// [quality] 质量
-  static Future<File> compressAndGetFile(File file, String targetPath,
+  static Future<File?> compressAndGetFile(File file, String targetPath,
       {int minWidth = 1920, int minHeight = 1080, int quality = 85}) async {
-    final File result = await FlutterImageCompress.compressAndGetFile(
+    final File? result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
       targetPath,
       minWidth: minWidth,
@@ -219,9 +225,9 @@ class FKPhotos {
   /// [minWidth] 宽度
   /// [minHeight] 高度
   /// [quality] 质量
-  static Future<Uint8List> compressAsset(String assetName,
+  static Future<Uint8List?> compressAsset(String assetName,
       {int minWidth = 1920, int minHeight = 1080, int quality = 85}) async {
-    final Uint8List result = await FlutterImageCompress.compressAssetImage(
+    final Uint8List? result = await FlutterImageCompress.compressAssetImage(
       assetName,
       minWidth: minWidth,
       minHeight: minHeight,
@@ -253,23 +259,34 @@ class FKPhotos {
 ///
 extension AssetEntityExtension on AssetEntity {
   /// 保存到相册
-  Future<AssetEntity> saveToAlbum() async {
-    return await PhotoManager.editor.saveImage(await originBytes);
+  Future<AssetEntity?> saveToAlbum() async {
+    Uint8List? u8l = await originBytes;
+    if (u8l != null) {
+      return await PhotoManager.editor.saveImage(u8l);
+    }
+    return null;
   }
 
   /// 转为base64
   Future<String> toBase64() async {
-    final Uint8List u8l = await originBytes;
-    return base64.encode(u8l.toList());
+    final Uint8List? u8l = await originBytes;
+    if (u8l != null) {
+      return base64.encode(u8l.toList());
+    }
+    return Future.value(null);
   }
 
   /// 压缩文件
   ///
   /// 压缩参数请参考 [FKPhotos.compressAndGetFile]
-  Future<File> compress({int minWidth = 1920, int minHeight = 1080, int quality = 85}) async {
+  Future<File?> compress({int minWidth = 1920, int minHeight = 1080, int quality = 85}) async {
     final String tempFilePath = await _generateTempFilePath();
-    return FKPhotos.compressAndGetFile(await originFile, tempFilePath,
-        minWidth: minWidth, minHeight: minHeight, quality: quality);
+    File? file = await originFile;
+    if (file != null) {
+      return FKPhotos.compressAndGetFile(file, tempFilePath,
+          minWidth: minWidth, minHeight: minHeight, quality: quality);
+    }
+    return null;
   }
 }
 
