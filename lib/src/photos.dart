@@ -58,6 +58,9 @@ void showPhotoViewerDialog(BuildContext context, {required ImageProvider imagePr
 /// 参数请参考 [FKPhotos.cameraPicker] 与 [FKPhotos.cameraPicker]
 void showSelectPhotoPicker(
   BuildContext context, {
+  String takePicText = '拍照', // take a picture
+  String albumText = '相册中选择', // Select from album
+  String cancelText = '取消', // Cancel
   bool isAllowRecording = false,
   bool isOnlyAllowRecording = false,
   bool enableAudio = false,
@@ -73,7 +76,7 @@ void showSelectPhotoPicker(
       context: context,
       actions: [
         ActionItem(
-            title: Langs.getLang(context, 'take_pic'),
+            title: takePicText,
             onPressed: () async {
               Navigator.pop(context);
               final AssetEntity? asset = await FKPhotos.cameraPicker(context,
@@ -87,7 +90,7 @@ void showSelectPhotoPicker(
               }
             }),
         ActionItem(
-            title: Langs.getLang(context, 'choose_album'),
+            title: albumText,
             onPressed: () async {
               Navigator.pop(
                 context,
@@ -99,7 +102,7 @@ void showSelectPhotoPicker(
               }
             })
       ],
-      bottomActionItem: BottomActionItem(title: Langs.getLang(context, 'cancel')));
+      bottomActionItem: BottomActionItem(title: cancelText));
 }
 
 /// 图片操作工具类
